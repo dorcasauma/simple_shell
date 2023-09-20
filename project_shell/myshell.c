@@ -7,12 +7,6 @@
 /**
  * main - The main function is the entry point of the program.
  *         creating a simple shell
- * executeCommand - The Function to execute a shell command.
- * cleanupAndExit - The Function to clean up resources and exit
- * @shellCommand: The path to the shell command.
- * @shellArgs: An array of strings representing the command and its arguments.
- * @envp: An array of environment variables.
- * Return: The function returns 0 to indicate successful program execution.
  */
 void executeCommand(char *shellCommand, char **shellArgs, char *envp[]);
 void cleanupAndExit(char *userInput, char **shellArgs);
@@ -67,6 +61,14 @@ waitpid(my_pid, &status, 0);
 cleanupAndExit(userInput, shellArgs);
 return (0);
 }
+/**
+ * executeCommand - The Function to execute a shell command.
+ * @shellCommand: The path to the shell command.
+ * @shellArgs: An array of strings representing the command and its arguments.
+ * @envp: An array of environment variables.
+ * Return: The function returns 0 to indicate successful program execution.
+ */
+
 void executeCommand(char *shellCommand, char **shellArgs, char *envp[])
 {
 if (execve(shellCommand, shellArgs, envp) == -1)
@@ -75,6 +77,11 @@ perror("execve");
 exit(EXIT_FAILURE);
 }
 }
+/**
+ * cleanupAndExit - The Function to clean up resources and exit
+ * @shellArgs: An array of strings representing the command and its arguments.
+ * Return: The function returns 0 to indicate successful program execution.
+ */
 void cleanupAndExit(char *userInput, char **shellArgs)
 {
 free(userInput);
