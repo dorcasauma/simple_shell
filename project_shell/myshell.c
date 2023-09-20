@@ -4,6 +4,14 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+/**
+ * main - The main function is the entry point of the program.
+ *         creating a simple shell
+ * executeCommand - Function to execute a shell command.
+ * cleanupAndExit - Function to clean up resources and exit
+ *
+ * Return: The function returns 0 to indicate successful program execution.
+ */
 void executeCommand(char *shellCommand, char **shellArgs, char *envp[]);
 void cleanupAndExit(char *userInput, char **shellArgs);
 int main(void)
