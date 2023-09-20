@@ -15,7 +15,7 @@ int execveResult;
 int status;
 pid_t my_pid;
 ssize_t bytesRead;
-char **shellArgs = malloc(4 * sizeof(char *)); // Allocate memory for shellArgs
+char **shellArgs = malloc(4 * sizeof(char *));
 if (shellArgs == NULL)
 {
 perror("malloc");
