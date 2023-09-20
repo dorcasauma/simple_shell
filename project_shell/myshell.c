@@ -13,6 +13,7 @@ int main() {
     int execveResult;
     int status;
     pid_t my_pid;
+    ssize_t bytesRead;
 
     while (1) {
         printf("mysimpleshell $: ");
