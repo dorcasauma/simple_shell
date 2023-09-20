@@ -15,9 +15,15 @@ int main() {
     pid_t my_pid;
     ssize_t bytesRead;
 
+    char **shellArgs = malloc(4 * sizeof(char *)); // Allocate memory for shellArgs
+    if (shellArgs == NULL) {
+        perror("malloc");
+        exit(EXIT_FAILURE);
+    }
+
     while (1) {
         printf("mysimpleshell $: ");
-        ssize_t bytesRead = getline(&userInput, &userInputSize, stdin);
+        bytesRead = getline(&userInput, &userInputSize, stdin);
 
         if (bytesRead == -1) {
             perror("getline");
@@ -28,22 +34,29 @@ int main() {
 
         if (strcmp(userInput, "exit") == 0) {
             free(userInput);
+            free(shellArgs); // Free allocated memory for shellArgs
             exit(0);
         }
 
-        char *shellArgs[] = {shellCommand, "-c", userInput, NULL};
+        shellArgs[0] = shellCommand;
+        shellArgs[1] = "-c";
+        shellArgs[2] = userInput;
+        shellArgs[3] = NULL;
 
         my_pid = fork();
 
         if (my_pid == -1) {
             perror("fork");
+            free(userInput);
+            free(shellArgs);
             exit(EXIT_FAILURE);
         }
 
         if (my_pid == 0) {
             execveResult = execve(shellCommand, shellArgs, envp);
             perror("execve");
-            free(userInput);  // Free allocated memory before exiting child process
+            free(userInput);
+            free(shellArgs);
             exit(EXIT_FAILURE);
         } else {
             waitpid(my_pid, &status, 0);
@@ -51,6 +64,7 @@ int main() {
         }
     }
 
-    free(userInput);  // Free allocated memory before exiting the main process
+    free(userInput);
+    free(shellArgs);
     return 0;
 }
