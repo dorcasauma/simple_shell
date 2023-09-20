@@ -5,29 +5,26 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 /**
- * main - The main function is the entry point of the program.
- *         creating a simple shell
- * @shellCommand: The path to the shell command.
- * @shellArgs: An array of strings representing the command and its arguments.
- * @envp: An array of environment variables.
- * Return: The function returns 0 to indicate successful program execution.
- */
-
-/**
- * executeCommand: This function is responsible for executing a shell command using
- * the execve system call. It will replace the current process with the specified
- * shell command. If the execution fails, it will print an error message and exit
+ * executeCommand: This function is responsible
+ * for executing a shell command using
+ * the execve system call. It will replace
+ * the current process with the specified
+ * shell command. If the execution fails,
+ * it will print an error message and exit
  * with a failure status
  *
  * @shellCommand: The path to the shell command.
- * @shellArgs: An array of strings representing the command and its arguments.
+ * @shellArgs: An array of strings representing the
+ * command and its arguments.
  * @envp: An array of environment variables.
  *
  */
 void executeCommand(char *shellCommand, char **shellArgs, char *envp[]);
 /**
- * cleanupAndExit - This function is responsible for freeing allocated memory and exiting
- * the program. It is called when the program needs to exit, either due to an error
+ * cleanupAndExit - This function is responsible for freeing
+ * allocated memory and exiting
+ * the program. It is called when the program
+ * needs to exit, either due to an error
  * or the "exit" command.
  *
  * @userInput: The user input buffer.
@@ -35,6 +32,14 @@ void executeCommand(char *shellCommand, char **shellArgs, char *envp[]);
  *
  */
 void cleanupAndExit(char *userInput, char **shellArgs);
+/**
+ * main - The main function is the entry point of the program.
+ *         creating a simple shell
+ * @shellCommand: The path to the shell command.
+ * @shellArgs: An array of strings representing the command and its arguments.
+ * @envp: An array of environment variables.
+ * Return: The function returns 0 to indicate successful program execution.
+ */
 int main(void)
 {
 char *userInput = NULL;
