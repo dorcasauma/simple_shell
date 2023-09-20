@@ -4,13 +4,14 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+void executeCommand(char *shellCommand, char **shellArgs, char *envp[]);
+void cleanupAndExit(char *userInput, char **shellArgs);
 int main(void)
 {
 char *userInput = NULL;
 size_t userInputSize = 0;
 char *shellCommand = "/bin/bash";
 char *envp[] = {NULL};
-int execveResult;
 int status;
 pid_t my_pid;
 ssize_t bytesRead;
@@ -27,14 +28,12 @@ bytesRead = getline(&userInput, &userInputSize, stdin);
 if (bytesRead == -1)
 {
 perror("getline");
-exit(EXIT_FAILURE);
+cleanupAndExit(userInput, shellArgs);
 }
 userInput[bytesRead - 1] = '\0';
 if (strcmp(userInput, "exit") == 0)
 {
-free(userInput);
-free(shellArgs);
-exit(0);
+cleanupAndExit(userInput, shellArgs);
 }
 shellArgs[0] = shellCommand;
 shellArgs[1] = "-c";
@@ -44,24 +43,31 @@ my_pid = fork();
 if (my_pid == -1)
 {
 perror("fork");
-free(userInput);
-free(shellArgs);
-exit(EXIT_FAILURE);
+cleanupAndExit(userInput, shellArgs);
 }
 if (my_pid == 0)
 {
-execveResult = execve(shellCommand, shellArgs, envp);
-perror("execve");
-free(userInput);
-free(shellArgs);
-exit(EXIT_FAILURE);
+executeCommand(shellCommand, shellArgs, envp);
 }
 else
 {
 waitpid(my_pid, &status, 0);
 }
 }
+cleanupAndExit(userInput, shellArgs);
+return (0);
+}
+void executeCommand(char *shellCommand, char **shellArgs, char *envp[])
+{
+if (execve(shellCommand, shellArgs, envp) == -1)
+{
+perror("execve");
+exit(EXIT_FAILURE);
+}
+}
+void cleanupAndExit(char *userInput, char **shellArgs)
+{
 free(userInput);
 free(shellArgs);
-return (0);
+exit(0);
 }
