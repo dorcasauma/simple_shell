@@ -7,7 +7,12 @@
 /**
  * main - The main function is the entry point of the program.
  *         creating a simple shell
+ * @shellCommand: The path to the shell command.
+ * @shellArgs: An array of strings representing the command and its arguments.
+ * @envp: An array of environment variables.
+ * Return: The function returns 0 to indicate successful program execution.
  */
+
 void executeCommand(char *shellCommand, char **shellArgs, char *envp[]);
 void cleanupAndExit(char *userInput, char **shellArgs);
 int main(void)
@@ -79,6 +84,7 @@ exit(EXIT_FAILURE);
 }
 /**
  * cleanupAndExit - The Function to clean up resources and exit
+ * @userInput: what the user enters to stdin
  * @shellArgs: An array of strings representing the command and its arguments.
  * Return: The function returns 0 to indicate successful program execution.
  */
