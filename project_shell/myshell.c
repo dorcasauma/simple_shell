@@ -4,8 +4,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-
-int main()
+int main(void)
 {
 char *userInput = NULL;
 size_t userInputSize = 0;
@@ -42,7 +41,8 @@ shellArgs[1] = "-c";
 shellArgs[2] = userInput;
 shellArgs[3] = NULL;
 my_pid = fork();
-if (my_pid == -1) {
+if (my_pid == -1)
+{
 perror("fork");
 free(userInput);
 free(shellArgs);
@@ -55,7 +55,8 @@ perror("execve");
 free(userInput);
 free(shellArgs);
 exit(EXIT_FAILURE);
-} else
+}
+else
 {
 waitpid(my_pid, &status, 0);
 }
