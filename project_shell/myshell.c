@@ -7,9 +7,11 @@
 /**
  * main - The main function is the entry point of the program.
  *         creating a simple shell
- * executeCommand - Function to execute a shell command.
- * cleanupAndExit - Function to clean up resources and exit
- *
+ * executeCommand - The Function to execute a shell command.
+ * cleanupAndExit - The Function to clean up resources and exit
+ * @shellCommand: The path to the shell command.
+ * @shellArgs: An array of strings representing the command and its arguments.
+ * @envp: An array of environment variables.
  * Return: The function returns 0 to indicate successful program execution.
  */
 void executeCommand(char *shellCommand, char **shellArgs, char *envp[]);
