@@ -57,7 +57,7 @@ exit(EXIT_FAILURE);
 }
 while (1)
 {
-printf("mysimpleshell $: ");
+printf("#cisfun$: ");
 bytesRead = getline(&userInput, &userInputSize, stdin);
 if (bytesRead == -1)
 {
