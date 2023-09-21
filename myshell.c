@@ -4,37 +4,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-/**
- * executeCommand - Execute a shell command using execve.
- * executeCommand: This function is responsible
- * for executing a shell command using
- * the execve system call. It will replace
- * the current process with the specified
- * shell command. If the execution fails,
- * it will print an error message and exit
- * with a failure status
- *
- * @shellCommand: The path to the shell command.
- * @shellArgs: An array of strings representing the
- * command and its arguments.
- * @envp: An array of environment variables.
- *
- */
-void executeCommand(char *shellCommand, char **shellArgs, char *envp[]);
-/**
- * cleanupAndExit - Clean up resources and exit the program.
- * cleanupAndExit: This function is responsible for freeing
- * allocated memory and exiting
- * the program. It is called when the program
- * needs to exit, either due to an error
- * or the "exit" command.
- *
- * @userInput: The user input buffer.
- * @shellArgs: An array of strings representing the
- * shell command and its arguments.
- *
- */
-void cleanupAndExit(char *userInput, char **shellArgs);
+#include "main.h"
 /**
  * main - The main function is the entry point of the program.
  *         creating a simple shell
@@ -44,7 +14,6 @@ int main(void)
 {
 char *userInput = NULL;
 size_t userInputSize = 0;
-char *shellCommand = "/bin/bash";
 char *envp[] = {NULL};
 int status;
 pid_t my_pid;
@@ -69,9 +38,7 @@ if (strcmp(userInput, "exit") == 0)
 {
 cleanupAndExit(userInput, shellArgs);
 }
-shellArgs[0] = shellCommand;
-shellArgs[1] = "-c";
-shellArgs[2] = userInput;
+shellArgs[0] = userInput;
 shellArgs[3] = NULL;
 my_pid = fork();
 if (my_pid == -1)
@@ -81,7 +48,7 @@ cleanupAndExit(userInput, shellArgs);
 }
 if (my_pid == 0)
 {
-executeCommand(shellCommand, shellArgs, envp);
+executeCommand(userInput, shellArgs, envp);
 }
 else
 {
