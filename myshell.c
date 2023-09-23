@@ -27,7 +27,6 @@ exit(EXIT_FAILURE);
 }
 while (1)
 {
-printf("");
 bytesRead = getline(&userInput, &userInputSize, stdin);
 if (bytesRead == -1)
 {
