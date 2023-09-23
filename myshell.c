@@ -42,7 +42,6 @@ shellArgs[0] = userInput;
 shellArgs[3] = NULL;
 removeLeadingSpaces(userInput);
 removeTrailingSpaces(userInput);
-// printf("userinput %s", userInput);
 my_pid = fork();
 if (my_pid == -1)
 {
