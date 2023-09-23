@@ -109,13 +109,41 @@ return (0);
  * Return: The function returns 0 to indicate successful program execution.
  */
 
-void executeCommand(char *shellCommand, char **shellArgs, char *envp[])
-{
-if (execve(shellCommand, shellArgs, envp) == -1)
-{
-perror("execve");
-exit(EXIT_FAILURE);
-}
+void executeCommand(char *shellCommand, char **shellArgs, char *envp[]) {
+    // Create a copy of shellArgs with proper null-termination
+    int argCount = 0;
+    int i;
+    char **argsCopy;
+
+    while (shellArgs[argCount] != NULL) {
+        argCount++;
+    }
+
+    argsCopy = malloc((argCount + 1) * sizeof(char *));
+    if (argsCopy == NULL) {
+        perror("malloc");
+        exit(EXIT_FAILURE);
+    }
+
+    for (i = 0; i < argCount; i++) {
+        argsCopy[i] = strdup(shellArgs[i]);
+        if (argsCopy[i] == NULL) {
+            perror("strdup");
+            exit(EXIT_FAILURE);
+        }
+    }
+    argsCopy[argCount] = NULL;  // Null-terminate the array
+
+    if (execve(shellCommand, argsCopy, envp) == -1) {
+        perror("execve");
+        exit(EXIT_FAILURE);
+    }
+
+    // Free the copied arguments
+    for (i = 0; i < argCount; i++) {
+        free(argsCopy[i]);
+    }
+    free(argsCopy);
 }
 /**
  * cleanupAndExit - The Function to clean up resources and exit
