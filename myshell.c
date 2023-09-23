@@ -31,7 +31,7 @@ int main() {
 
         comment = strchr(input, '#');
         if (comment != NULL) {
-            *comment = '\0'; // Remove everything after the #
+            *comment = '\0';
         }
 
         pid = fork();
