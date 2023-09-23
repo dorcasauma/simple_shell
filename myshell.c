@@ -110,7 +110,6 @@ return (0);
  */
 
 void executeCommand(char *shellCommand, char **shellArgs, char *envp[]) {
-    // Create a copy of shellArgs with proper null-termination
     int argCount = 0;
     int i;
     char **argsCopy;
@@ -132,14 +131,13 @@ void executeCommand(char *shellCommand, char **shellArgs, char *envp[]) {
             exit(EXIT_FAILURE);
         }
     }
-    argsCopy[argCount] = NULL;  // Null-terminate the array
+    argsCopy[argCount] = NULL;
 
     if (execve(shellCommand, argsCopy, envp) == -1) {
         perror("execve");
         exit(EXIT_FAILURE);
     }
 
-    // Free the copied arguments
     for (i = 0; i < argCount; i++) {
         free(argsCopy[i]);
     }
