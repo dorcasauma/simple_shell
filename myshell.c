@@ -14,6 +14,8 @@
 int main(void)
 {
 char *userInput = NULL;
+char *token;
+int argCount = 0;
 size_t userInputSize = 0;
 char *envp[] = {NULL};
 int status;
@@ -37,10 +39,14 @@ if (strcmp(userInput, "exit") == 0)
 {
 cleanupAndExit(userInput, shellArgs);
 }
-shellArgs[0] = userInput;
-shellArgs[3] = NULL;
 removeLeadingSpaces(userInput);
 removeTrailingSpaces(userInput);
+
+token = strtok(userInput, " ");
+while (token != NULL) {
+    shellArgs[argCount++] = token;
+    token = strtok(NULL, " ");
+}
 if (userInput[0] == '\0'){
 continue;
 }
