@@ -51,6 +51,18 @@ if (strcmp(shellArgs[0], "exit") == 0)
 cleanupAndExit(userInput, shellArgs);
 }
 
+if (strcmp(shellArgs[0], "setenv") == 0)
+{
+setenvCommand(shellArgs);
+continue;
+}
+
+if (strcmp(shellArgs[0], "unsetenv") == 0)
+{
+unsetenvCommand(shellArgs);
+continue;
+}
+
 if (strchr(shellArgs[0], '/') == NULL) {
     char command_path[MAX_PATH_LEN];
     snprintf(command_path, sizeof(command_path), "/bin/%s", shellArgs[0]);
@@ -171,5 +183,17 @@ void printStringArray(char **array) {
     int i;
     for (i = 0; array[i] != NULL; i++) {
         printf("shellArgs[%d]: %s\n", i, array[i]);
+    }
+}
+
+void setenvCommand(char **shellArgs){
+    if (shellArgs != NULL && shellArgs[1] != NULL && shellArgs[2] != NULL){
+        setenv(shellArgs[1], shellArgs[2], 1);
+    }
+}
+
+void unsetenvCommand(char **shellArgs){
+    if (shellArgs != NULL && shellArgs[1] != NULL){
+        unsetenv(shellArgs[1]);
     }
 }

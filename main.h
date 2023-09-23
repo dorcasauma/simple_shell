@@ -37,3 +37,7 @@ void removeTrailingSpaces(char *str);
 void printEnvironment();
 
 void printStringArray(char **array);
+
+void setenvCommand(char **shellArgs);
+
+void unsetenvCommand(char **shellArgs);
