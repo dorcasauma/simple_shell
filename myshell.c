@@ -132,7 +132,7 @@ void executeCommand(char *shellCommand, char **shellArgs, char *envp[]) {
             exit(EXIT_FAILURE);
         }
     }
-    argsCopy[argCount] = NULL; // Null-terminate the array
+    argsCopy[argCount] = NULL;
 
     result = execve(shellCommand, argsCopy, envp);
     if (result == -1) {
