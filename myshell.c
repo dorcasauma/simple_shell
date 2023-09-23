@@ -113,6 +113,7 @@ void executeCommand(char *shellCommand, char **shellArgs, char *envp[]) {
     int argCount = 0;
     int i;
     char **argsCopy;
+    int result;
 
     while (shellArgs[argCount] != NULL) {
         argCount++;
@@ -133,7 +134,8 @@ void executeCommand(char *shellCommand, char **shellArgs, char *envp[]) {
     }
     argsCopy[argCount] = NULL;
 
-    if (execve(shellCommand, argsCopy, envp) == -1) {
+    result = execve(shellCommand, argsCopy, envp);
+    if (result == -1) {
         perror("execve");
         exit(EXIT_FAILURE);
     }
