@@ -6,6 +6,7 @@
 #include <sys/wait.h>
 #include "main.h"
 
+#define MAX_PATH_LEN 256
 /**
  * main - The main function is the entry point of the program.
  *         creating a simple shell
@@ -48,6 +49,15 @@ while (token != NULL) {
     shellArgs[argCount++] = token;
     token = strtok(NULL, " ");
 }
+
+// Check if the provided command is a full path
+if (strchr(shellArgs[0], '/') == NULL) {
+    // If not a full path, prepend /bin to the command
+    char command_path[MAX_PATH_LEN];
+    snprintf(command_path, sizeof(command_path), "/bin/%s", shellArgs[0]);
+    shellArgs[0] = command_path;
+}
+
 if (userInput[0] == '\0'){
 continue;
 }
@@ -59,7 +69,7 @@ cleanupAndExit(userInput, shellArgs);
 }
 if (my_pid == 0)
 {
-executeCommand(userInput, shellArgs, envp);
+executeCommand(shellArgs[0], shellArgs, envp);
 }
 else
 {
