@@ -33,3 +33,5 @@ void cleanupAndExit(char *userInput, char **shellArgs);
 void removeLeadingSpaces(char *str);
 
 void removeTrailingSpaces(char *str);
+
+void printEnvironment();

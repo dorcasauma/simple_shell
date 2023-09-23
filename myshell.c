@@ -59,6 +59,16 @@ if (strchr(shellArgs[0], '/') == NULL) {
 if (userInput[0] == '\0'){
 continue;
 }
+if (strcmp(shellArgs[0], "/bin/env") == 0)
+{
+printEnvironment();
+continue;
+}
+if (access(shellArgs[0], X_OK) != 0) {
+    fprintf(stderr, "Error: Command '%s' does not exist or is not executable.\n", shellArgs[0]);
+    continue;
+}
+
 my_pid = fork();
 if (my_pid == -1)
 {
@@ -139,5 +149,14 @@ void removeTrailingSpaces(char *str) {
     while (i >= 0 && (str[i] == ' ' || str[i] == '\t' || str[i] == '\n' || str[i] == '\r')) {
         str[i] = '\0';
         i--;
+    }
+}
+
+void printEnvironment() {
+    extern char **environ;
+
+    char **env;
+    for (env = environ; *env != NULL; env++) {
+        printf("%s\n", *env);
     }
 }
