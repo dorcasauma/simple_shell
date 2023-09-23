@@ -5,59 +5,54 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-#define MAX_COMMANDS 10
-#define MAX_COMMAND_LENGTH 100
+#define MAX_INPUT_LENGTH 1024
+#define MAX_TOKENS 100
+  pid_t pid;
+
+void parse_input(char *input, char **tokens, char *delimiter);
 
 int main() {
-    char input[MAX_COMMAND_LENGTH];
-    char *commands[MAX_COMMANDS];
-    int num_commands = 0;
-
-    char *token;
-    size_t len;
-    int i;
-
-    printf("Enter commands (separated by ;): ");
-    fgets(input, sizeof(input), stdin);
-
-    token = strtok(input, ";");
-    while (token != NULL && num_commands < MAX_COMMANDS) {
-        commands[num_commands] = strdup(token);
-        num_commands++;
-        token = strtok(NULL, ";");
-    }
-
-    for (i = 0; i < num_commands; i++) {
-        char *command = commands[i];
-        int status;
-
-        while (*command == ' ' || *command == '\t') {
-            command++;
+    char input[MAX_INPUT_LENGTH];
+    char *tokens[MAX_TOKENS];
+    
+    while (1) {
+        printf("MyShell> ");
+        if (fgets(input, sizeof(input), stdin) == NULL) {
+            break;
         }
 
-        len = strlen(command);
+        input[strcspn(input, "\n")] = '\0';
 
-        while (len > 0 && (command[len - 1] == ' ' || command[len - 1] == '\t' || command[len - 1] == '\n')) {
-            command[len - 1] = '\0';
-            len--;
+        if (input[0] == '#') {
+            continue;
         }
 
-        if (strlen(command) > 0) {
-            pid_t pid = fork();
-            if (pid == 0) {
-                execlp("/bin/sh", "/bin/sh", "-c", command, NULL);
-                perror("exec");
+        pid = fork();
+
+        if (pid < 0) {
+            perror("Fork failed");
+            exit(1);
+        } else if (pid == 0) {
+            parse_input(input, tokens, " ");
+            if (execvp(tokens[0], tokens) == -1) {
+                perror("Execvp failed");
                 exit(1);
-            } else if (pid < 0) {
-                perror("fork");
-                exit(1);
-            } else {
-                waitpid(pid, &status, 0);
             }
+        } else {
+            int status;
+            wait(&status);
         }
-
-        free(commands[i]);
     }
 
     return 0;
+}
+
+void parse_input(char *input, char **tokens, char *delimiter) {
+    char *token = strtok(input, delimiter);
+    int i = 0;
+    while (token != NULL) {
+        tokens[i++] = token;
+        token = strtok(NULL, delimiter);
+    }
+    tokens[i] = NULL;
 }
