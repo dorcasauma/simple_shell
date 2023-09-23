@@ -5,81 +5,10 @@
 
 #define MAX_BUFFER_SIZE 1024
 
-void executeCommand(char *userInput) {
-    char *args[MAX_BUFFER_SIZE];
-    int i = 0;
-    char currentDir[MAX_BUFFER_SIZE];
-
-    char *token = strtok(userInput, " ");
-    while (token != NULL) {
-        args[i] = token;
-        i++;
-        token = strtok(NULL, " ");
-    }
-    args[i] = NULL;
-
-    if (i > 0) {
-        if (strcmp(args[0], "setenv") == 0) {
-            if (i != 3) {
-                fprintf(stderr, "Usage: setenv VARIABLE VALUE\n");
-                return;
-            }
-            if (setenv(args[1], args[2], 1) != 0) {
-                perror("setenv");
-            }
-        } else if (strcmp(args[0], "unsetenv") == 0) {
-
-            if (i != 2) {
-                fprintf(stderr, "Usage: unsetenv VARIABLE\n");
-                return;
-            }
-            if (unsetenv(args[1]) != 0) {
-                perror("unsetenv");
-            }
-        } else if (strcmp(args[0], "cd") == 0) {
-
-            if (i == 1) {
-
-                char *homeDir = getenv("HOME");
-                if (homeDir == NULL) {
-                    fprintf(stderr, "HOME environment variable not set\n");
-                } else {
-                    if (chdir(homeDir) != 0) {
-                        perror("chdir");
-                    }
-                }
-            } else if (strcmp(args[1], "-") == 0) {
-                char *prevDir = getenv("OLDPWD");
-                if (prevDir == NULL) {
-                    fprintf(stderr, "OLDPWD environment variable not set\n");
-                } else {
-                    if (chdir(prevDir) != 0) {
-                        perror("chdir");
-                    }
-                }
-            } else {
-                if (chdir(args[1]) != 0) {
-                    perror("chdir");
-                }
-            }
-
-            if (getcwd(currentDir, sizeof(currentDir)) != NULL) {
-                if (setenv("PWD", currentDir, 1) != 0) {
-                    perror("setenv");
-                }
-            } else {
-                perror("getcwd");
-            }
-        } else if (strcmp(args[0], "exit") == 0) {
-            exit(0);
-        } else {
-            printf("Executing command: %s\n", args[0]);
-        }
-    }
-}
-
 int main() {
     char userInput[MAX_BUFFER_SIZE];
+    char currentDir[MAX_BUFFER_SIZE];
+    char previousDir[MAX_BUFFER_SIZE];
 
     while (1) {
         printf("MyShell> ");
@@ -87,9 +16,52 @@ int main() {
             break;
         }
 
+
         userInput[strcspn(userInput, "\n")] = '\0';
 
-        executeCommand(userInput);
+        if (getcwd(previousDir, sizeof(previousDir)) == NULL) {
+            perror("getcwd");
+            continue;
+        }
+
+
+        if (strncmp(userInput, "cd", 2) == 0) {
+            char *args = userInput + 2;
+
+            while (*args == ' ' || *args == '\t') {
+                args++;
+            }
+            if (*args == '\0') {
+                args = getenv("HOME");
+            } else if (strcmp(args, "-") == 0) {
+
+                args = getenv("OLDPWD");
+                if (args == NULL) {
+                    fprintf(stderr, "OLDPWD environment variable not set\n");
+                    continue;
+                }
+            }
+
+
+            if (chdir(args) != 0) {
+                perror("chdir");
+                continue;
+            }
+
+            if (getcwd(currentDir, sizeof(currentDir)) == NULL) {
+                perror("getcwd");
+                continue;
+            }
+            if (setenv("PWD", currentDir, 1) != 0) {
+                perror("setenv");
+            }
+            if (setenv("OLDPWD", previousDir, 1) != 0) {
+                perror("setenv");
+            }
+        } else {
+
+            printf("Executing command: %s\n", userInput);
+        }
     }
 
     return 0;
