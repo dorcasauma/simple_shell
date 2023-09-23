@@ -41,6 +41,9 @@ shellArgs[0] = userInput;
 shellArgs[3] = NULL;
 removeLeadingSpaces(userInput);
 removeTrailingSpaces(userInput);
+if (userInput[0] == '\0'){
+continue;
+}
 my_pid = fork();
 if (my_pid == -1)
 {
