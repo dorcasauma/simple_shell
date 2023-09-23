@@ -3,99 +3,106 @@
 #include <string.h>
 #include <unistd.h>
 
-#define MAX_ARGS 64
+#define MAX_BUFFER_SIZE 1024
 
-void cleanupAndExit(char *userInput, int exit_status);
-void executeCommand(char **shellArgs);
+// Function to parse and execute user commands
+void executeCommand(char *userInput) {
+    char *args[MAX_BUFFER_SIZE];
+    int i = 0;
+    char currentDir[MAX_BUFFER_SIZE]; // Declare currentDir at the beginning
 
-ssize_t custom_getline(char **lineptr, size_t *n, FILE *stream);
+    // Tokenize the user input into arguments
+    char *token = strtok(userInput, " ");
+    while (token != NULL) {
+        args[i] = token;
+        i++;
+        token = strtok(NULL, " ");
+    }
+    args[i] = NULL;
 
-int main(void) {
-    char *userInput = NULL;
-    size_t userInputSize = 0;
-    int exit_status = 0;
-    char *shellArgs[MAX_ARGS];
+    // Check for built-in commands
+    if (i > 0) {
+        if (strcmp(args[0], "setenv") == 0) {
+            // Check if the correct number of arguments are provided
+            if (i != 3) {
+                fprintf(stderr, "Usage: setenv VARIABLE VALUE\n");
+                return;
+            }
+            if (setenv(args[1], args[2], 1) != 0) {
+                perror("setenv");
+            }
+        } else if (strcmp(args[0], "unsetenv") == 0) {
+            // Check if the correct number of arguments are provided
+            if (i != 2) {
+                fprintf(stderr, "Usage: unsetenv VARIABLE\n");
+                return;
+            }
+            if (unsetenv(args[1]) != 0) {
+                perror("unsetenv");
+            }
+        } else if (strcmp(args[0], "cd") == 0) {
+            // Handle the cd command
+            if (i == 1) {
+                // Change to the user's home directory
+                char *homeDir = getenv("HOME");
+                if (homeDir == NULL) {
+                    fprintf(stderr, "HOME environment variable not set\n");
+                } else {
+                    if (chdir(homeDir) != 0) {
+                        perror("chdir");
+                    }
+                }
+            } else if (strcmp(args[1], "-") == 0) {
+                // Change to the previous directory
+                char *prevDir = getenv("OLDPWD");
+                if (prevDir == NULL) {
+                    fprintf(stderr, "OLDPWD environment variable not set\n");
+                } else {
+                    if (chdir(prevDir) != 0) {
+                        perror("chdir");
+                    }
+                }
+            } else {
+                // Change to the specified directory
+                if (chdir(args[1]) != 0) {
+                    perror("chdir");
+                }
+            }
 
-    ssize_t bytesRead;
+            // Update the PWD environment variable
+            if (getcwd(currentDir, sizeof(currentDir)) != NULL) {
+                if (setenv("PWD", currentDir, 1) != 0) {
+                    perror("setenv");
+                }
+            } else {
+                perror("getcwd");
+            }
+        } else if (strcmp(args[0], "exit") == 0) {
+            // Exit the shell
+            exit(0);
+        } else {
+            // Execute other commands (not implemented in this example)
+            // You can use functions like execvp to execute external commands
+            printf("Executing command: %s\n", args[0]);
+        }
+    }
+}
+
+int main() {
+    char userInput[MAX_BUFFER_SIZE];
 
     while (1) {
-        printf("$ ");
-        bytesRead = custom_getline(&userInput, &userInputSize, stdin);
-
-        if (bytesRead == -1) {
-            perror("getline");
-            exit(1);
-        }
-
-        if (bytesRead == 0) {
+        printf("MyShell> ");
+        if (fgets(userInput, sizeof(userInput), stdin) == NULL) {
             break;
         }
 
+        // Remove the trailing newline character
+        userInput[strcspn(userInput, "\n")] = '\0';
 
-        if (shellArgs[0] != NULL) {
-            if (strcmp(shellArgs[0], "exit") == 0) {
-                if (shellArgs[1] != NULL) {
-                    exit_status = atoi(shellArgs[1]);
-                }
-                break;
-            } else if (strcmp(shellArgs[0], "setenv") == 0) {
-                if (shellArgs[1] != NULL && shellArgs[2] != NULL) {
-                    if (setenv(shellArgs[1], shellArgs[2], 1) != 0) {
-                        fprintf(stderr, "setenv: Failed to set environment variable.\n");
-                    }
-                } else {
-                    fprintf(stderr, "setenv: Usage: setenv VARIABLE VALUE\n");
-                }
-            } else if (strcmp(shellArgs[0], "unsetenv") == 0) {
-                if (shellArgs[1] != NULL) {
-                    if (unsetenv(shellArgs[1]) != 0) {
-                        fprintf(stderr, "unsetenv: Failed to unset environment variable.\n");
-                    }
-                } else {
-                    fprintf(stderr, "unsetenv: Usage: unsetenv VARIABLE\n");
-                }
-            } else {
-                executeCommand(shellArgs);
-            }
-        }
-
-        cleanupAndExit(userInput, exit_status);
+        // Execute the command
+        executeCommand(userInput);
     }
 
-    cleanupAndExit(userInput, exit_status);
-}
-
-void cleanupAndExit(char *userInput, int exit_status) {
-    free(userInput);
-    exit(exit_status);
-}
-
-void executeCommand(char **shellArgs) {
-    pid_t pid = fork();
-
-    if (pid == -1) {
-        perror("fork");
-        return;
-    }
-
-    if (pid == 0) {
-        if (execvp(shellArgs[0], shellArgs) == -1) {
-            perror("execvp");
-            exit(1);
-        }
-    } else {
-        int status;
-        if (waitpid(pid, &status, 0) == -1) {
-            perror("waitpid");
-        }
-    }
-}
-
-ssize_t custom_getline(char **lineptr, size_t *n, FILE *stream) {
-    ssize_t bytesRead;
-    *lineptr = NULL;
-    *n = 0;
-
-    bytesRead = getline(lineptr, n, stream);
-    return bytesRead;
+    return 0;
 }
