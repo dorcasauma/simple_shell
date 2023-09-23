@@ -29,7 +29,6 @@ while (1)
 bytesRead = getline(&userInput, &userInputSize, stdin);
 if (bytesRead == -1)
 {
-perror("getline");
 cleanupAndExit(userInput, shellArgs);
 }
 userInput[bytesRead - 1] = '\0';
