@@ -126,12 +126,12 @@ exit(EXIT_FAILURE);
 void cleanupAndExit(char *userInput, char **shellArgs)
 {
 int existStatus = 0;
-free(userInput);
-free(shellArgs);
 if (shellArgs != NULL && shellArgs[1] != NULL) {
     existStatus = atoi(shellArgs[1]);
 }
 exit(existStatus);
+free(userInput);
+free(shellArgs);
 }
 
 void removeLeadingSpaces(char *str) {
