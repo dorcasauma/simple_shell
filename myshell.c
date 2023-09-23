@@ -36,7 +36,7 @@ int main(void)
 
     while (1)
     {
-        int argCount = 0; // Move this declaration to the beginning of the block
+        int argCount = 0;
 
         bytesRead = custom_getline(&userInput, &userInputSize, stdin);
         if (bytesRead == -1)
