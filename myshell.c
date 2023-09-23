@@ -15,7 +15,6 @@ int main() {
     char *tokens[MAX_TOKENS];
     pid_t pid;
     int status;
-    char *comment;
 
     while (1) {
         printf("MyShell> ");
@@ -27,12 +26,6 @@ int main() {
 
         if (input[0] == '\0') {
             continue;
-        }
-
-        // Remove comments by searching for '#' character
-        comment = strchr(input, '#');
-        if (comment != NULL) {
-            *comment = '\0'; // Null-terminate the input string at the '#' character
         }
 
         pid = fork();
