@@ -37,10 +37,6 @@ if (bytesRead == -1)
 cleanupAndExit(userInput, shellArgs);
 }
 userInput[bytesRead - 1] = '\0';
-if (strcmp(userInput, "exit") == 0)
-{
-cleanupAndExit(userInput, shellArgs);
-}
 removeLeadingSpaces(userInput);
 removeTrailingSpaces(userInput);
 
@@ -48,6 +44,11 @@ token = strtok(userInput, " ");
 while (token != NULL) {
     shellArgs[argCount++] = token;
     token = strtok(NULL, " ");
+}
+
+if (strcmp(shellArgs[0], "exit") == 0)
+{
+cleanupAndExit(userInput, shellArgs);
 }
 
 if (strchr(shellArgs[0], '/') == NULL) {
@@ -64,6 +65,7 @@ if (strcmp(shellArgs[0], "/bin/env") == 0)
 printEnvironment();
 continue;
 }
+
 if (access(shellArgs[0], X_OK) != 0) {
     fprintf(stderr, "Error: Command '%s' does not exist or is not executable.\n", shellArgs[0]);
     continue;
@@ -111,9 +113,13 @@ exit(EXIT_FAILURE);
  */
 void cleanupAndExit(char *userInput, char **shellArgs)
 {
+int existStatus = 0;
 free(userInput);
 free(shellArgs);
-exit(0);
+if (shellArgs != NULL && shellArgs[1] != NULL) {
+    existStatus = atoi(shellArgs[1]);
+}
+exit(existStatus);
 }
 
 void removeLeadingSpaces(char *str) {
@@ -158,5 +164,12 @@ void printEnvironment() {
     char **env;
     for (env = environ; *env != NULL; env++) {
         printf("%s\n", *env);
+    }
+}
+
+void printStringArray(char **array) {
+    int i;
+    for (i = 0; array[i] != NULL; i++) {
+        printf("shellArgs[%d]: %s\n", i, array[i]);
     }
 }

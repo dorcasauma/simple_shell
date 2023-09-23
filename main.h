@@ -35,3 +35,5 @@ void removeLeadingSpaces(char *str);
 void removeTrailingSpaces(char *str);
 
 void printEnvironment();
+
+void printStringArray(char **array);
