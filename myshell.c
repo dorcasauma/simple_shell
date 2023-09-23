@@ -46,39 +46,39 @@ while (token != NULL) {
     token = strtok(NULL, " ");
 }
 
-if (strcmp(shellArgs[0], "exit") == 0)
+if (shellArgs != NULL && shellArgs[0] != NULL && strcmp(shellArgs[0], "exit") == 0)
 {
 cleanupAndExit(shellArgs);
 }
 
-if (strcmp(shellArgs[0], "setenv") == 0)
+if (shellArgs != NULL && shellArgs[0] != NULL && strcmp(shellArgs[0], "setenv") == 0)
 {
 setenvCommand(shellArgs);
 continue;
 }
 
-if (strcmp(shellArgs[0], "unsetenv") == 0)
+if (shellArgs != NULL && shellArgs[0] != NULL && strcmp(shellArgs[0], "unsetenv") == 0)
 {
 unsetenvCommand(shellArgs);
 continue;
 }
 
-if (strchr(shellArgs[0], '/') == NULL) {
+if (shellArgs != NULL && shellArgs[0] != NULL && strchr(shellArgs[0], '/') == NULL) {
     char command_path[MAX_PATH_LEN];
     snprintf(command_path, sizeof(command_path), "/bin/%s", shellArgs[0]);
     shellArgs[0] = command_path;
 }
 
-if (userInput[0] == '\0'){
+if (shellArgs != NULL && shellArgs[0] != NULL && userInput[0] == '\0'){
 continue;
 }
-if (strcmp(shellArgs[0], "/bin/env") == 0)
+if (shellArgs != NULL && shellArgs[0] != NULL && strcmp(shellArgs[0], "/bin/env") == 0)
 {
 printEnvironment();
 continue;
 }
 
-if (access(shellArgs[0], X_OK) != 0) {
+if (shellArgs != NULL && shellArgs[0] != NULL && access(shellArgs[0], X_OK) != 0) {
     fprintf(stderr, "Error: Command '%s' does not exist or is not executable.\n", shellArgs[0]);
     continue;
 }
