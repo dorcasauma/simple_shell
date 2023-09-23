@@ -92,15 +92,15 @@ exit(0);
 void removeLeadingSpaces(char *str) {
     int len = strlen(str);
     int i, j = 0;
-    int leadingSpace = 1; // Use an integer flag
+    int leadingSpace = 1;
 
     if (str == NULL) {
-        return; // Handle NULL input gracefully
+        return;
     }
 
     for (i = 0; i < len; i++) {
         if (str[i] != ' ' && str[i] != '\t' && str[i] != '\n' && str[i] != '\r') {
-            leadingSpace = 0; // Set flag to 0 when we find a non-space character
+            leadingSpace = 0;
         }
 
         if (!leadingSpace) {
@@ -108,7 +108,7 @@ void removeLeadingSpaces(char *str) {
         }
     }
 
-    str[j] = '\0'; // Null-terminate the resulting string
+    str[j] = '\0';
 }
 
 void removeTrailingSpaces(char *str) {
@@ -116,7 +116,7 @@ void removeTrailingSpaces(char *str) {
     int i = len - 1;
 
     if (str == NULL) {
-        return; // Handle NULL input gracefully
+        return;
     }
 
     while (i >= 0 && (str[i] == ' ' || str[i] == '\t' || str[i] == '\n' || str[i] == '\r')) {
