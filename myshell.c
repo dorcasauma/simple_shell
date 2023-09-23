@@ -89,7 +89,7 @@ if (my_pid == -1)
 perror("fork");
 cleanupAndExit(shellArgs);
 }
-if (my_pid == 0)
+if (shellArgs != NULL && shellArgs[0] != NULL && my_pid == 0)
 {
 executeCommand(shellArgs[0], shellArgs, envp);
 }
