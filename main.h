@@ -28,7 +28,7 @@ void executeCommand(char *shellCommand, char **shellArgs, char *envp[]);
  * shell command and its arguments.
  *
  */
-void cleanupAndExit(char *userInput, char **shellArgs);
+void cleanupAndExit(char **shellArgs);
 
 void removeLeadingSpaces(char *str);
 

@@ -34,7 +34,7 @@ argCount = 0;
 bytesRead = getline(&userInput, &userInputSize, stdin);
 if (bytesRead == -1)
 {
-cleanupAndExit(userInput, shellArgs);
+cleanupAndExit(shellArgs);
 }
 userInput[bytesRead - 1] = '\0';
 removeLeadingSpaces(userInput);
@@ -48,7 +48,7 @@ while (token != NULL) {
 
 if (strcmp(shellArgs[0], "exit") == 0)
 {
-cleanupAndExit(userInput, shellArgs);
+cleanupAndExit(shellArgs);
 }
 
 if (strcmp(shellArgs[0], "setenv") == 0)
@@ -87,7 +87,7 @@ my_pid = fork();
 if (my_pid == -1)
 {
 perror("fork");
-cleanupAndExit(userInput, shellArgs);
+cleanupAndExit(shellArgs);
 }
 if (my_pid == 0)
 {
@@ -98,7 +98,7 @@ else
 waitpid(my_pid, &status, 0);
 }
 }
-cleanupAndExit(userInput, shellArgs);
+cleanupAndExit(shellArgs);
 return (0);
 }
 /**
@@ -123,15 +123,13 @@ exit(EXIT_FAILURE);
  * @shellArgs: An array of strings representing the command and its arguments.
  * Return: The function returns 0 to indicate successful program execution.
  */
-void cleanupAndExit(char *userInput, char **shellArgs)
+void cleanupAndExit(char **shellArgs)
 {
 int existStatus = 0;
 if (shellArgs != NULL && shellArgs[1] != NULL) {
     existStatus = atoi(shellArgs[1]);
 }
 exit(existStatus);
-free(userInput);
-free(shellArgs);
 }
 
 void removeLeadingSpaces(char *str) {
