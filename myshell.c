@@ -50,9 +50,7 @@ while (token != NULL) {
     token = strtok(NULL, " ");
 }
 
-// Check if the provided command is a full path
 if (strchr(shellArgs[0], '/') == NULL) {
-    // If not a full path, prepend /bin to the command
     char command_path[MAX_PATH_LEN];
     snprintf(command_path, sizeof(command_path), "/bin/%s", shellArgs[0]);
     shellArgs[0] = command_path;
