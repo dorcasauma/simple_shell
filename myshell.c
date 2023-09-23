@@ -29,9 +29,10 @@ int main() {
             continue;
         }
 
+        // Remove comments by searching for '#' character
         comment = strchr(input, '#');
         if (comment != NULL) {
-            *comment = '\0';
+            *comment = '\0'; // Null-terminate the input string at the '#' character
         }
 
         pid = fork();
