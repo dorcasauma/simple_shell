@@ -132,7 +132,7 @@ void executeCommand(char *shellCommand, char **shellArgs, char *envp[]) {
             exit(EXIT_FAILURE);
         }
     }
-    argsCopy[argCount] = NULL;
+    argsCopy[argCount] = NULL; // Null-terminate the array
 
     result = execve(shellCommand, argsCopy, envp);
     if (result == -1) {
@@ -145,6 +145,7 @@ void executeCommand(char *shellCommand, char **shellArgs, char *envp[]) {
     }
     free(argsCopy);
 }
+
 /**
  * cleanupAndExit - The Function to clean up resources and exit
  * @userInput: what the user enters to stdin
