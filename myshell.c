@@ -7,14 +7,15 @@
 
 #define MAX_INPUT_LENGTH 1024
 #define MAX_TOKENS 100
-  pid_t pid;
 
 void parse_input(char *input, char **tokens, char *delimiter);
 
 int main() {
     char input[MAX_INPUT_LENGTH];
     char *tokens[MAX_TOKENS];
-    
+    pid_t pid;
+    int status;
+
     while (1) {
         printf("MyShell> ");
         if (fgets(input, sizeof(input), stdin) == NULL) {
@@ -23,7 +24,7 @@ int main() {
 
         input[strcspn(input, "\n")] = '\0';
 
-        if (input[0] == '#') {
+        if (input[0] == '\0') {
             continue;
         }
 
@@ -39,7 +40,6 @@ int main() {
                 exit(1);
             }
         } else {
-            int status;
             wait(&status);
         }
     }
